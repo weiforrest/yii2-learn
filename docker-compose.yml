@@ -1,38 +1,33 @@
-version: '3.2'
-
+version: '2'
 services:
-
-  frontend:
-    build: frontend
-    ports:
-      - 20080:80
+  web:
+    image: nginx:latest
     volumes:
-      # Re-use local composer cache via host-volume
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      # Mount source-code for development
-      - ./:/app
-
-  backend:
-    build: backend
+      - ./:/app:delegated #网站目录
+      - ./site.conf:/etc/nginx/conf.d/site.conf #nginx 配置文件 使用前需要复制
     ports:
-      - 21080:80
-    volumes:
-      # Re-use local composer cache via host-volume
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      # Mount source-code for development
-      - ./:/app
+      - '80:80'
+    links:
+      - php
+    restart: always
 
-  mysql:
-    image: mysql:5.7
-    environment:
-      - MYSQL_ROOT_PASSWORD=verysecret
-      - MYSQL_DATABASE=yii2advanced
-      - MYSQL_USER=yii2advanced
-      - MYSQL_PASSWORD=secret
+  php:
+     image: php:gd
+     volumes:
+      - ./:/app:delegated
+     depends_on:
+      - db
+     restart: always
 
-  #pgsql:
-  #  image: postgres:9.5
-  #  environment:
-  #    - POSTGRES_DB=yii2advanced
-  #    - POSTGRES_USER=yii2advanced
-  #    - POSTGRES_PASSWORD=secret
+  db:
+     image: mysql:5.7
+     volumes:
+      - ./data:/var/lib/mysql:delegated
+     restart: always
+     ports:
+      - '3306:3306'
+     environment:
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_DATABASE: docker
+       MYSQL_USER: docker
+       MYSQL_PASSWORD: docker
