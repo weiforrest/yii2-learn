@@ -4,7 +4,7 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-namespace app\assets;
+namespace common\assets;
 use yii\web\AssetBundle;
 /**
  * Main application asset bundle.
@@ -12,18 +12,18 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class LayuiAsset extends AssetBundle
+class LoginAsset extends AssetBundle
 {
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'layui/css/layui.css',
+        'layui/css/login.css',
     ];
     public $js = [
-        'layui/layui.js',
     ];
     public $depends = [
         // 'yii\web\YiiAsset',
+        'common\assets\LayuiAsset',
         // 'yii\bootstrap\BootstrapAsset',
     ];
 }

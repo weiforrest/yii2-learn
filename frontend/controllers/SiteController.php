@@ -95,6 +95,7 @@ class SiteController extends Controller
             // Yii::info($model->getFirstErrors());
 
             // $model->password = '';
+            Yii::$app->user->setReturnUrl(Yii::$app->request->getHeaders()->get("referer"));
             $this->layout='nonav';
             return $this->render('login', [
                 'model' => $model,
@@ -160,6 +161,7 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
+        $this->layout='nonav';
         return $this->render('signup', [
             'model' => $model,
         ]);
