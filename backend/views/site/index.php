@@ -80,7 +80,10 @@ AppAsset::register($this);
                         <dd><a lay-href="set/user/info.html">基本资料</a></dd>
                         <dd><a lay-href="set/user/password.html">修改密码</a></dd>
                         <hr>
-                        <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+                        <!-- <dd layadmin-event="logout" style="text-align: center;"> -->
+                        <dd style="text-align: center;">
+                            <a href="<?= Url::to(['site/logout'])?>">退出</a>
+                        </dd>
                     </dl>
                 </li>
 
