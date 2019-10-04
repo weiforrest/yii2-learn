@@ -9,6 +9,7 @@ $this->title = 'Login';
         <div class="layadmin-user-login-main">
             <div class="layadmin-user-login-box layadmin-user-login-header">
                 <h2><?= Yii::$app->name;?></h2>
+                <p>LayuiAdmin后台管理系统</p>
             </div>
             <div class="layadmin-user-login-box layadmin-user-login-body">
                 <form class="layui-form" action="<?= Url::to(['site/login']);?>" method="post">

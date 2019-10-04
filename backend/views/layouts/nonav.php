@@ -4,7 +4,7 @@
 /* @var $content string */
 
 use yii\helpers\Html;
-use common\assets\LoginAsset;
+use backend\assets\LoginAsset;
 // use yii\bootstrap\ActiveForm;
 LoginAsset::register($this);
 ?>

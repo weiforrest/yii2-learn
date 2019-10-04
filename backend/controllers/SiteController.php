@@ -26,7 +26,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index','main'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -60,7 +60,18 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        // index 为后台的框架主页面,有自己的独立布局
+        return $this->renderPartial('index');
+    }
+
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionMain()
+    {
+        return $this->render('main');
     }
 
     /**
