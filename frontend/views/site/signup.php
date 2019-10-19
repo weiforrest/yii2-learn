@@ -25,6 +25,11 @@ $this->title = 'Signup';
                 </div>
 
                 <div class="layui-form-item">
+                    <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="lay-user-login-username"></label>
+                    <input type="text" name="SignupForm[email]" id="layui-user-login-email"  lay-verify="required" placeholder="电子邮箱" class="layui-input" value="<?=$model->email?>" lay-verType="tips">
+                </div>
+
+                <div class="layui-form-item">
                     <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="lay-user-login-password"></label>
                     <input type="password" name="SignupForm[password]" id="layui-user-login-password" lay-verify="required" placeholder="密码" class="layui-input" value="<?=$model->password?>" lay-verType="tips">
                 </div>
@@ -41,4 +46,15 @@ $this->title = 'Signup';
 </div>
 <?php JsBlock::begin(); ?>
     layui.use('form',function(){});
-<?php JsBlock::end();?>
+<?php
+    if($model->errors){
+        // 取出验证中获取到的第一个错误，用layer显示
+        $value = current($model->getFirstErrors());
+?>
+    layui.use('layer',function(){
+        layer.msg("<?= $value?>",{icon:5});
+    });
+<?php 
+    }
+JsBlock::end();
+?>
