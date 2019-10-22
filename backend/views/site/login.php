@@ -17,12 +17,12 @@ $this->title = 'Login';
                     <div class="login-form-title"></div>
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="lay-user-login-username"></label>
-                        <input type="text" name="LoginForm[username]" id="layui-user-login-username"  lay-verify="required" placeholder="用户名" class="layui-input" value="<?=$model->username?>" lay-verType="tips">
+                        <input type="text" name="AdminLoginForm[username]" id="layui-user-login-username"  lay-verify="required" placeholder="用户名" class="layui-input" value="<?=$model->username?>" lay-verType="tips">
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="lay-user-login-password"></label>
-                        <input type="password" name="LoginForm[password]" id="layui-user-login-password" lay-verify="required" placeholder="密码" class="layui-input" value="<?=$model->password?>" lay-verType="tips">
+                        <input type="password" name="AdminLoginForm[password]" id="layui-user-login-password" lay-verify="required" placeholder="密码" class="layui-input" value="<?=$model->password?>" lay-verType="tips">
                     </div>
                     <div class="layui-form-item">
                         <button class="layui-btn layui-btn-fluid" lay-submit lay-filter="lay-user-login-submit">登录</button>
