@@ -29,6 +29,11 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
 
 
+    public $password;
+    public $rememberMe = false;
+
+
+
     /**
      * {@inheritdoc}
      */
@@ -47,6 +52,7 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+
     /**
      * {@inheritdoc}
      */
@@ -55,6 +61,12 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['username', 'password'], 'string'],
+
+            // /* 登陆场景 */
+            [['username','password'], 'required'],
+            ['password' , 'validatePasswordLogin'],
+            ['rememberMe', 'boolean'],
         ];
     }
 
@@ -205,5 +217,45 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * Validates the password.
+     * This method serves as the inline validation for password.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validatePasswordLogin($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+            $user = $this->findByUsername($this->username);
+            if (!$user || !$user->validatePassword($this->password)) {
+                $this->addError($attribute, 'Incorrect username or password.');
+            }
+        }
+    }
+
+    /**
+     * Logs in a user using the provided username and password.
+     *
+     * @return bool whether the user is logged in successfully
+     */
+    public function login()
+    {
+        if ($this->validate()) {
+            return Yii::$app->user->login(static::findByUsername($this->username), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        }
+        
+        return false;
+    }
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_ACTIVE => Yii::t('app', 'Status Active'),
+            self::STATUS_DELETED => Yii::t('app', 'Status Deleted'),
+            self::STATUS_INACTIVE => Yii::t('app', "Status InActive")
+        ];
     }
 }

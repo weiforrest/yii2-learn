@@ -17,15 +17,15 @@ $this->title = 'Login';
                     <div class="login-form-title"></div>
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-username" for="lay-user-login-username"></label>
-                        <input type="text" name="LoginForm[username]" id="layui-user-login-username"  lay-verify="required" placeholder="用户名" class="layui-input" value="<?=$model->username?>" lay-verType="tips">
+                        <input type="text" name="User[username]" id="layui-user-login-username"  lay-verify="required" placeholder="用户名" class="layui-input" value="<?=$model->username?>" lay-verType="tips">
                     </div>
 
                     <div class="layui-form-item">
                         <label class="layadmin-user-login-icon layui-icon layui-icon-password" for="lay-user-login-password"></label>
-                        <input type="password" name="LoginForm[password]" id="layui-user-login-password" lay-verify="required" placeholder="密码" class="layui-input" value="<?=$model->password?>" lay-verType="tips">
+                        <input type="password" name="User[password]" id="layui-user-login-password" lay-verify="required" placeholder="密码" class="layui-input" value="<?=$model->password?>" lay-verType="tips">
                     </div>
                     <div class="layui-form-item" style="margin-bottom:20px">
-                        <input type="checkbox" name="LoginForm[rememberMe]" lay-skin="primary" title="记住密码" checked value="1">
+                        <input type="checkbox" name="User[rememberMe]" lay-skin="primary" title="记住密码" checked value="1">
                         <a href="<?=Url::to(['site/signup'])?>" class="layadmin-user-jump-change layadmin-link" style="margin-top:8px;margin-left:8px">注册</a>
                         <a href="<?=Url::to(['site/request-password-reset'])?>" class="layadmin-user-jump-change layadmin-link" style="margin-top:8px">忘记密码</a>
                     </div>
