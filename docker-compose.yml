@@ -9,7 +9,7 @@ services:
       - '80:80'
     links:
       - php
-    restart: always
+    #restart: always
 
   php:
      image: php:gd
@@ -17,13 +17,13 @@ services:
       - ./:/app:delegated
      depends_on:
       - db
-     restart: always
+    # restart: always
 
   db:
      image: mysql:5.7
      volumes:
       - ./data:/var/lib/mysql:delegated
-     restart: always
+    # restart: always
      ports:
       - '3306:3306'
      environment:

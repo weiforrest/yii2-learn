@@ -2,6 +2,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 use yii\helpers\Url;
+use yii\helpers\HTML;
 use common\widgets\JsBlock;
 $this->title = 'Login';
 ?>
@@ -46,7 +47,7 @@ $this->title = 'Login';
         $value = current($model->getFirstErrors());
 ?>
     layui.use('layer',function(){
-        layer.msg("<?= $value?>",{icon:5});
+        layer.msg("<?= HTML::encode($value)?>",{icon:5});
     });
 <?php
     }
