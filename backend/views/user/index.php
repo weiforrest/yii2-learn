@@ -47,8 +47,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php JsBlock::begin();
 ?>
     layui.use('table',function(){
-        var table = layui.table,
-        $ = layui.$;
+        var table = layui.table
+        ,$ = layui.$
+        ,util = layui.util;
 
         //异步方法渲染表格
         table.render({
@@ -61,14 +62,20 @@ $this->params['breadcrumbs'][] = $this->title;
             ,page:true
             ,title:"<?=$this->title?>"
             ,cols: [[
-                {type:'numbers'}
-                ,{checkbox:true}
-                ,{field:'id', title:'ID',width:80,hide:true,sort:true}
+                {checkbox:true}
+                ,{type:'numbers'}
+                //,{field:'id', title:'ID',width:80,hide:true,sort:true}
                 ,{field:'username', title:'用户名'}
                 ,{field:'email', title:'电子邮箱'}
                 ,{field:'status', title:'状态',templet:'#switchTpl', unresize:true,width:100,sort:true}
-                ,{field:'created_at', title:'创建时间',sort:true}
-                ,{field:'updated_at', title:'更新时间',sort:true}
+                ,{field:'created_at', title:'创建时间'
+                    ,templet: '<div>{{layui.util.toDateString(d.created_at*1000)}}</div>'
+                    ,sort:true
+                }
+                ,{field:'updated_at', title:'更新时间'
+                    ,templet: '<div>{{layui.util.toDateString(d.updated_at*1000)}}</div>'
+                    ,sort:true
+                }
             ]]
         });
     });
