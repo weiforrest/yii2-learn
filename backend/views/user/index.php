@@ -50,22 +50,24 @@ $this->params['breadcrumbs'][] = $this->title;
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSelected"><?= Yii::t('app', "Delete Selected")?></button>
     </div>
-        <div class="layui-form-item layui-form-pane" style="margin:10px 0 0 0">
-            <div class="layui-inline" style="margin-right:0px">
-                <label class="layui-form-label"><?= Yii::t('app', "UserName")?></label>
-                <div class="layui-input-inline">
-                    <input type="text" name="UserSearch[username]" class="layui-input">
-                </div>
-                <label class="layui-form-label"><?= Yii::t('app', "Email")?></label>
-                <div class="layui-input-inline">
-                    <input type="text" name="UserSearch[email]" class="layui-input">
-                </div>
-                <div class="layui-table-toolbar-button">
-                <button class="layui-btn" lay-submit lay-filter="userSearch"><i class="layui-icon layui-icon-search"></i></button>
-                <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
+        <form class="layui-form">
+            <div class="layui-form-item layui-form-pane" style="margin:10px 0 0 0">
+                <div class="layui-inline" style="margin-right:0px">
+                    <label class="layui-form-label"><?= Yii::t('app', "UserName")?></label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="UserSearch[username]" class="layui-input">
+                    </div>
+                    <label class="layui-form-label"><?= Yii::t('app', "Email")?></label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="UserSearch[email]" class="layui-input">
+                    </div>
+                    <div class="layui-table-toolbar-button">
+                        <button class="layui-btn" lay-submit lay-filter="userSearch"><i class="layui-icon layui-icon-search"></i></button>
+                        <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
 </script>
 
 <style>
