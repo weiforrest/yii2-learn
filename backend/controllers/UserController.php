@@ -120,11 +120,33 @@ class UserController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $this->findModel($id)->delete();
+        if(Yii::$app->requset->isAjax){
+            $id = Yii::$app->request->post($id);
+            if(($model = $this->findModel($id)) !== null){
+                $model->status = User::STATUS_INACTIVE;
 
-        return $this->redirect(['index']);
+
+                $response = Yii::$app->response;
+                $response->format = \yii\web\Response::FORMAT_JSON;
+
+
+                if ($model->save()) {
+                    return [
+                        "code" => 0,
+                        'msg' => "删除成功",
+                    ];
+                } else {
+                    return [
+                        "code" => 1,
+                        "msg" => '删除失败',
+                    ];
+                }
+            }
+        }else{
+            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
     }
 
     /**

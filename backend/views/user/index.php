@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="Active|InActive" disabled {{ d.status == <?=User::STATUS_ACTIVE?> ? 'checked': ''}}>
 </script>
 
-<!-- 工具栏模板 -->
+<!-- 头部工具栏模板 -->
 <script type="text/html" id="toolbarTpl">
     <div class="layui-btn-container">
         <?= Html::a(Yii::t('app', 'Create User'),['create'],['class' =>'layui-btn layui-btn-sm'])?>
@@ -92,14 +92,16 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php JsBlock::begin();
 ?>
     layui.use('table',function(){
-        var table = layui.table;
+        var table = layui.table
+        ,$ = layui.$
+        ,csrfToken = document.getElementsByTagName("meta")['csrf-token']['content'];
 
         //异步方法渲染表格
         table.render({
             elem: '#userTable'
             ,url: '<?=Url::to(['user/data'])?>'
             //添加csrf验证
-            ,where:{ '_csrf-backend': document.getElementsByTagName("meta")['csrf-token']['content']}
+            ,where: {"_csrf-backend":csrfToken}
             ,request: {
                 limitName:'pageSize'
             }
@@ -144,17 +146,28 @@ $this->params['breadcrumbs'][] = $this->title;
 
         table.on('tool(user)', function(obj){
             switch(obj.event) {
-                case 'detail':
-                    layer.msg('detail');
-                break;
-                case 'edit':
-                    layer.msg('edit');
-                break;
                 case 'delete':
-                    layer.msg('detele');
-                break;
-                case 'deleteSelected':
-                    layer.msg('deleteSelected');
+                    $.post(
+                        "<?= Url::to(['user/delete'])?>"
+                        ,{"_csrf-backend":csrfToken, id:obj.data.id}
+                        ,function (data) {
+                            if(data.code == 0){
+                                obj.del();
+                                layer.msg(data.msg);
+                            }
+                        }
+                    );
+                    /*$.ajax({
+                        type:'post'
+                        ,url:"<?= Url::to(['user/delete'])?>"
+                        ,data:{"_csrf-backend":csrfToken, id:obj.data.id} 
+                        ,success:function(data) {
+                            if(data.code == 0){
+                                obj.del();
+                                layer.msg(data.msg);
+                            }
+                        }
+                    });*/
                 break;
             };
         });
