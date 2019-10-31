@@ -15,6 +15,25 @@ $this->title = Yii::t('app', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+    <?php //放到table外 避免每次重载table时 也会刷新form?>
+    <form class="layui-form">
+        <div class="layui-form-item layui-form-pane" style="margin:10px 0 0 0">
+            <div class="layui-inline" style="margin-right:0px">
+                <label class="layui-form-label"><?= Yii::t('app', "UserName")?></label>
+                <div class="layui-input-inline">
+                    <input type="text" name="username" id="username" class="layui-input">
+                </div>
+                <label class="layui-form-label"><?= Yii::t('app', "Email")?></label>
+                <div class="layui-input-inline">
+                    <input type="text" name="email" id="email" class="layui-input">
+                </div>
+                <div class="layui-table-toolbar-button">
+                    <button class="layui-btn" lay-submit lay-filter="userSearch"><i class="layui-icon layui-icon-search"></i></button>
+                    <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
     <table id="userTable" lay-filter="user"></table>
     <?php /* GridView::widget([
         'dataProvider' => $dataProvider,
@@ -50,24 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSelected"><?= Yii::t('app', "Delete Selected")?></button>
     </div>
-        <form class="layui-form">
-            <div class="layui-form-item layui-form-pane" style="margin:10px 0 0 0">
-                <div class="layui-inline" style="margin-right:0px">
-                    <label class="layui-form-label"><?= Yii::t('app', "UserName")?></label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="UserSearch[username]" class="layui-input">
-                    </div>
-                    <label class="layui-form-label"><?= Yii::t('app', "Email")?></label>
-                    <div class="layui-input-inline">
-                        <input type="text" name="UserSearch[email]" class="layui-input">
-                    </div>
-                    <div class="layui-table-toolbar-button">
-                        <button class="layui-btn" lay-submit lay-filter="userSearch"><i class="layui-icon layui-icon-search"></i></button>
-                        <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
-                    </div>
-                </div>
-            </div>
-        </form>
 </script>
 
 <style>
@@ -91,13 +92,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php JsBlock::begin();
 ?>
-    layui.use('table',function(){
+    layui.use(['table','form'],function(){
         var table = layui.table
         ,$ = layui.$
+        ,form = layui.form
         ,csrfToken = document.getElementsByTagName("meta")['csrf-token']['content'];
 
         //异步方法渲染表格
-        table.render({
+        var userTable = table.render({
             elem: '#userTable'
             ,url: '<?=Url::to(['user/data'])?>'
             //添加csrf验证
@@ -130,9 +132,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ]]
         });
 
-        //监听事件
+        //监听头部工具栏事件
         table.on('toolbar(user)', function(obj){
             var checkStatus = table.checkStatus(obj.config.id);
+            var username = document.getElementById("username").value;
+            var email = document.getElementById("email").value;
             switch(obj.event) {
                 case 'getCheckLength':
                     var data = checkStatus.data;
@@ -141,9 +145,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 case 'deleteSelected':
                     layer.msg('deleteSelected');
                 break;
+                /*case 'searchSubmit':
+                    username = 'test';
+                    email = 'test';
+                    layer.msg('formSubmit');
+                break;
+                case 'resetSearch':
+                    username = '';
+                    email = '';
+                    layer.msg('resetSearch');
+                break;*/
             };
         });
 
+        //监听行工具栏事件
         table.on('tool(user)', function(obj){
             switch(obj.event) {
                 case 'delete':
@@ -170,6 +185,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     });*/
                 break;
             };
+        });
+
+        // 监听搜索框
+        form.on('submit(userSearch)', function(data){
+            console.log(data.field.username);
+            //console.log(data.field.email);
+            //根据搜索条件重载表格
+            userTable.reload({
+                where:{
+                    "_csrf-backend":csrfToken
+                    ,"username":data.field.username
+                    ,"email":data.field.email
+                }
+            })
+            layer.msg("search");
+            return false;
         });
 
     });

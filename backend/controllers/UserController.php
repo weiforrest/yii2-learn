@@ -17,17 +17,17 @@ class UserController extends Controller
     /**
      * {@inheritdoc}
      */
-    // public function behaviors()
-    // {
-    //     return [
-    //         'verbs' => [
-    //             'class' => VerbFilter::className(),
-    //             'actions' => [
-    //                 'delete' => ['POST'],
-    //             ],
-    //         ],
-    //     ];
-    // }
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
+    }
 
     
 
@@ -50,7 +50,8 @@ class UserController extends Controller
     public function actionData()
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->bodyParams);
+        Yii::trace(Yii::$app->request->bodyParams);
         $response = Yii::$app->response;
         $response->format = \yii\web\Response::FORMAT_JSON;
 
@@ -125,15 +126,15 @@ class UserController extends Controller
         if(Yii::$app->request->isAjax){
             $id = Yii::$app->request->post('id');
             if($id !== null){
-                $model = $this->findModel($id);
-                $model->status = User::STATUS_INACTIVE;
+                // $model = $this->findModel($id);
+                // $model->status = User::STATUS_INACTIVE;
 
 
                 $response = Yii::$app->response;
                 $response->format = \yii\web\Response::FORMAT_JSON;
 
 
-                if ($model->save()) {
+                if ($this->findModel($id)->delete()) {
                     return [
                         "code" => 0,
                         'msg' => "删除成功",
@@ -145,9 +146,8 @@ class UserController extends Controller
                     ];
                 }
             }
-        }else{
-            throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 
     /**

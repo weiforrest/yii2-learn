@@ -59,9 +59,17 @@ class UserSearch extends User
 
         // add conditions that should always apply here
 
+        $pagination  = [];
+        $pagination['pageSize'] = $params['pageSize'] ? $params['pageSize']: 10;
+
+        if($params['page']){
+            // Yii2 current page number is zero-based
+            $pagination['page'] = $params['page'] - 1;
+        }
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => ['pageSize' => $params['pageSize']? $params['pageSize'] : '10'],
+            'pagination' => $pagination
         ]);
 
         $this->load($params);
@@ -80,9 +88,14 @@ class UserSearch extends User
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            Yii::trace("outusernmae");
+        if($params['username']){
+            Yii::trace("intousername");
+            $query->andFilterWhere(['like', 'username', $params['username']]);
+        }
+        if($params['email']){
+            $query->andFilterWhere(['like', 'email', $params['email']]);
+        }
 
         return $dataProvider;
     }
