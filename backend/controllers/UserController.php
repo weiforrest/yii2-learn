@@ -51,7 +51,6 @@ class UserController extends Controller
     {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->bodyParams);
-        Yii::trace(Yii::$app->request->bodyParams);
         $response = Yii::$app->response;
         $response->format = \yii\web\Response::FORMAT_JSON;
 

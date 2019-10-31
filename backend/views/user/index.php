@@ -96,7 +96,8 @@ $this->params['breadcrumbs'][] = $this->title;
         var table = layui.table
         ,$ = layui.$
         ,form = layui.form
-        ,csrfToken = document.getElementsByTagName("meta")['csrf-token']['content'];
+        //,csrfToken = document.getElementsByTagName("meta")['csrf-token']['content'];
+        , csrfToken = "<?=Yii::$app->request->getCsrfToken()?>"; 
 
         //异步方法渲染表格
         var userTable = table.render({
