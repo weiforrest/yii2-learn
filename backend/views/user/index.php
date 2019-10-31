@@ -149,7 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 case 'delete':
                     $.post(
                         "<?= Url::to(['user/delete'])?>"
-                        ,{"_csrf-backend":csrfToken, id:obj.data.id}
+                        ,{id:obj.data.id, "_csrf-backend":csrfToken}
                         ,function (data) {
                             if(data.code == 0){
                                 obj.del();

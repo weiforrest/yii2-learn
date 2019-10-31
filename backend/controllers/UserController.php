@@ -122,9 +122,10 @@ class UserController extends Controller
      */
     public function actionDelete()
     {
-        if(Yii::$app->requset->isAjax){
-            $id = Yii::$app->request->post($id);
-            if(($model = $this->findModel($id)) !== null){
+        if(Yii::$app->request->isAjax){
+            $id = Yii::$app->request->post('id');
+            if($id !== null){
+                $model = $this->findModel($id);
                 $model->status = User::STATUS_INACTIVE;
 
 
