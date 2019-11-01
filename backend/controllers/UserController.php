@@ -123,25 +123,54 @@ class UserController extends Controller
     public function actionDelete()
     {
         if(Yii::$app->request->isAjax){
-            $id = Yii::$app->request->post('id');
-            if($id !== null){
+            $ids = Yii::$app->request->post('id');
+            if($ids !== null){
                 // $model = $this->findModel($id);
                 // $model->status = User::STATUS_INACTIVE;
-
-
+                $errors = [];
+                // 将单个请求转化为数组
+                Yii::trace($ids);
+                if(is_array($ids)){
+                    Yii::trace("is array");
+                }else{
+                    $ids=[$ids];
+                    Yii::trace("not is array");
+                    Yii::trace($ids);
+                }
+                // !isset($ids[0]) && $ids = [$ids];
+                $err = '';
+                foreach($ids as $id) {
+                    $model = $this->findModel($id);
+                    if($model !== null){
+                        $result = $model->delete();
+                        if(!$result){
+                            $errors[$id] =$model;
+                        }
+                    }else{
+                        $err.= 'id='.$id.'not found<br>';
+                    }
+                }
                 $response = Yii::$app->response;
                 $response->format = \yii\web\Response::FORMAT_JSON;
-
-
-                if ($this->findModel($id)->delete()) {
+                if (count($errors) == 0 &&  $err === '') {
                     return [
                         "code" => 0,
                         'msg' => "删除成功",
                     ];
                 } else {
+                    foreach($errors as $one => $model) {
+                        $err .=$one .':';
+                        $errorReasons = $model->getErrors();
+                        foreach($errorReasons as $errorReason) {
+                            $err .= $errorReason[0] . ';';
+                        }
+                        $err = rtrim($err, ';') . '<br>';
+                    }
+                    $err = rtrim($err, '<br>');
+
                     return [
                         "code" => 1,
-                        "msg" => '删除失败',
+                        "msg" => $err,
                     ];
                 }
             }
@@ -161,7 +190,9 @@ class UserController extends Controller
         if (($model = User::findOne($id)) !== null) {
             return $model;
         }
-
+        if(Yii::$app->request->isAjax){// ajax 请求不宜直接抛出错误 前台获取不到。
+            return null;
+        }
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 }

@@ -136,26 +136,41 @@ $this->params['breadcrumbs'][] = $this->title;
         //监听头部工具栏事件
         table.on('toolbar(user)', function(obj){
             var checkStatus = table.checkStatus(obj.config.id);
-            var username = document.getElementById("username").value;
-            var email = document.getElementById("email").value;
+            var data = checkStatus.data;
             switch(obj.event) {
                 case 'getCheckLength':
-                    var data = checkStatus.data;
                     layer.msg('选中了：'+ data.length + ' 个');
                 break;
                 case 'deleteSelected':
-                    layer.msg('deleteSelected');
+                    if(data.length != 0) {
+                        layer.confirm("确定删除共"+data.length+"个用户?", function(index){
+                            console.log(data);
+                            /*
+                            //构建[{id:1},{id:2}] 数组
+                            var result = data.map(({id}) => {
+                                return {id};
+                            });*/
+                            var result = data.map(function(val,index){
+                                return val.id;
+                            });
+                            //console.log({ id:result, "_csrf-backend":csrfToken});
+
+                            $.post(
+                                "<?=Url::to(['user/delete'])?>"
+                                ,{ id:result, "_csrf-backend":csrfToken}
+                                ,function(data){
+                                    if(data.code == 0){
+                                        //删除所有行
+                                        layer.msg(data.msg);
+                                    } else{
+                                        layer.msg(data.msg);
+                                    }
+                                }
+                            );
+                            layer.close(index);
+                        });
+                    }
                 break;
-                /*case 'searchSubmit':
-                    username = 'test';
-                    email = 'test';
-                    layer.msg('formSubmit');
-                break;
-                case 'resetSearch':
-                    username = '';
-                    email = '';
-                    layer.msg('resetSearch');
-                break;*/
             };
         });
 
@@ -163,27 +178,33 @@ $this->params['breadcrumbs'][] = $this->title;
         table.on('tool(user)', function(obj){
             switch(obj.event) {
                 case 'delete':
-                    $.post(
-                        "<?= Url::to(['user/delete'])?>"
-                        ,{id:obj.data.id, "_csrf-backend":csrfToken}
-                        ,function (data) {
-                            if(data.code == 0){
-                                obj.del();
-                                layer.msg(data.msg);
+                    layer.confirm('确定删除 '+obj.data.username+' 用户?', function(index){
+                        $.post(
+                            "<?= Url::to(['user/delete'])?>"
+                            ,{id:obj.data.id, "_csrf-backend":csrfToken}
+                            ,function (data) {
+                                if(data.code == 0){
+                                    obj.del();
+                                    layer.msg(data.msg);
+                                }
                             }
-                        }
-                    );
-                    /*$.ajax({
-                        type:'post'
-                        ,url:"<?= Url::to(['user/delete'])?>"
-                        ,data:{"_csrf-backend":csrfToken, id:obj.data.id} 
-                        ,success:function(data) {
-                            if(data.code == 0){
-                                obj.del();
-                                layer.msg(data.msg);
+                        );
+                        /*$.ajax({
+                            type:'post'
+                            ,url:"<?= Url::to(['user/delete'])?>"
+                            ,data:{"_csrf-backend":csrfToken, id:obj.data.id} 
+                            ,success:function(data) {
+                                if(data.code == 0){
+                                    obj.del();
+                                    layer.msg(data.msg);
+                                }
                             }
-                        }
-                    });*/
+                        });*/
+
+                        // 关闭窗口
+                        layer.close(index);
+
+                    });
                 break;
             };
         });
