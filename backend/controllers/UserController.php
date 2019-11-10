@@ -84,8 +84,17 @@ class UserController extends Controller
     {
         $model = new User(['scenario' => User::SCENARIO_REGISTER]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())){
+           if($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+           }else{
+                $errors = $model->getErrors();
+                $err = '';
+                foreach($errors as $error){
+                    $err .= $error[0] . '<br>';
+                }
+                Yii::$app->getSession()->setFlash('error', $err);
+            }
         }
 
         return $this->render('create', [

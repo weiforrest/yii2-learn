@@ -70,6 +70,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
     });
 <?php
+    /* 使用setFlash 传递错误信息
     if($model->errors){
         // 取出验证中获取到的第一个错误，用layer显示
         $value = current($model->getFirstErrors());
@@ -78,6 +79,6 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
         layer.msg("<?= HTML::encode($value)?>",{icon:5});
     });
 <?php
-    }
+    }*/
 JsBlock::end();
 ?>

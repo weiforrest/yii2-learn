@@ -187,19 +187,25 @@ AppAsset::register($this);
                         </dl>
                     </li>
                     <li data-name="user" class="layui-nav-item">
-                        <a href="javascript:;" lay-tips="用户" lay-direction="2">
+                        <a href="javascript:;" lay-href="<?= Url::to(['user/index'])?>" lay-tips="用户" lay-direction="2">
                             <i class="layui-icon layui-icon-user"></i>
                             <cite>用户</cite>
                         </a>
+                    </li>
+                    <li data-name="permission" class="layui-nav-item">
+                        <a href="javascript:;" lay-tips="权限管理" lay-direction="2">
+                            <i class="layui-icon layui-icon-auz"></i>
+                            <cite>权限管理</cite>
+                        </a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a lay-href="<?= Url::to(['user/index'])?>">网站用户</a>
+                                <a lay-href="<?= Url::to(['rbac/admin'])?>">管理员</a>
                             </dd>
                             <dd>
-                                <a lay-href="user/administrators/list.html">后台管理员</a>
+                                <a lay-href="<?= Url::to(['rbac/roles'])?>">角色</a>
                             </dd>
                             <dd>
-                                <a lay-href="user/administrators/role.html">角色管理</a>
+                                <a lay-href="<?= Url::to(['rbac/permissions'])?>">权限</a>
                             </dd>
                         </dl>
                     </li>
@@ -224,12 +230,6 @@ AppAsset::register($this);
                                 </dl>
                             </dd>
                         </dl>
-                    </li>
-                    <li data-name="get" class="layui-nav-item">
-                        <a href="javascript:;" lay-href="//www.layui.com/admin/#get" lay-tips="授权" lay-direction="2">
-                            <i class="layui-icon layui-icon-auz"></i>
-                            <cite>授权</cite>
-                        </a>
                     </li>
                 </ul>
             </div>
