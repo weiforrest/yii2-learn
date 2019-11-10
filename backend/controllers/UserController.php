@@ -103,9 +103,20 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->setScenario(User::SCENARIO_UPDATE);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) ){
+            if($model->save()) {
+                Yii::$app->getSession()->setFlash("success", Yii::t('app',"Success"));
+                return $this->redirect(['view', 'id' => $model->id]);
+            }else{
+                $errors = $model->getErrors();
+                $err = '';
+                foreach($errors as $error){
+                    $err .= $error[0] . '<br>';
+                }
+                Yii::$app->getSession()->setFlash('error', $err);
+            }
         }
 
         return $this->render('update', [
