@@ -15,7 +15,7 @@ $this->title = Yii::t('app', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-    <?php //放到table外 避免每次重载table时 也会刷新form?>
+    <?php //搜索框放到table外 避免每次重载table时 也会刷新form?>
     <form class="layui-form">
         <div class="layui-form-item layui-form-pane" style="margin:10px 0 0 0">
             <div class="layui-inline" style="margin-right:0px">
@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <!-- 状态切换的模板 -->
 <script type="text/html" id="switchTpl">
-    <input type="checkbox" name="status" value="{{d.status}}" lay-skin="switch" lay-text="Active|InActive" disabled {{ d.status == <?=User::STATUS_ACTIVE?> ? 'checked': ''}}>
+    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-filter="status" lay-text="Active|InActive"  {{ d.status == <?=User::STATUS_ACTIVE?> ? 'checked': ''}}>
 </script>
 
 <!-- 头部工具栏模板 -->
@@ -207,6 +207,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     });
                 break;
             };
+        });
+
+        // 监听switch按钮
+        form.on('switch(status)',function(data){
+            var id = data.value;
+            var status = data.elem.checked ? "<?=User::STATUS_ACTIVE?>":"<?=User::STATUS_INACTIVE?>";
+            $.post(
+                "<?= Url::to(['user/status'])?>"
+                ,{id:id, status:status,"_csrf-backend":csrfToken}
+                ,function (data) {
+                    if(data.code == 0){
+                        layer.msg(data.msg);
+                    }else{
+                        layer.msg('返回码'+data.code+' '+data.msg);
+                    }
+                }
+            );
+
         });
 
         // 监听搜索框

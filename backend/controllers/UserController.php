@@ -113,6 +113,46 @@ class UserController extends Controller
         ]);
     }
 
+    public function actionStatus()
+    {
+        if(Yii::$app->request->isAjax){
+            $id = Yii::$app->request->post('id',null);
+            $response = Yii::$app->response;
+            $response->format = \yii\web\Response::FORMAT_JSON;
+            Yii::trace($id);
+            if($id) {
+                $model = $this->findModel($id);
+                if($model){
+                    $status = Yii::$app->request->post('status',null);
+                    Yii::trace($status);
+                    $model->status = $status;
+                    if($model->save()){
+                        $code = 0;
+                        $msg = '更新成功';
+                    }else{
+                        $code = 1;
+                        $errorReasons = $model->getErrors();
+                        foreach($errorReasons as $errorReason) {
+                            $msg .= $errorReason[0] . ';';
+                        }
+                    }
+                } else{
+                    $code = 1;
+                    $msg = '没有找到id='.$id.'记录';
+                }
+            } else{
+                $code = 1;
+                $msg = '没有获取到参数id';
+            }
+            return [
+                "code" => $code,
+                'msg' => $msg,
+            ];
+        }
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+    }
+
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
