@@ -64,8 +64,9 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
         var form = layui.form;
 
         form.on('switch(status)', function(data){
-            console.log(data.elem.checked);
+            console.log(data);
             data.elem.value = data.elem.checked ? '<?=User::STATUS_ACTIVE?>' : '<?=User::STATUS_INACTIVE?>';
+            data.elem.checked = true; //因为不选中不传递值给后台，所有设置为选中, 为了传递值给后台
         });
 
     });
