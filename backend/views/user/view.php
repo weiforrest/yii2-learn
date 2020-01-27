@@ -1,45 +1,47 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use backend\models\User;
+use common\widgets\JsBlock;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
 
-$this->title = $model->id;
+$this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="user-view">
+<form  class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+        <label class="layui-form-label"><?=$model->getAttributeLabel('username')?></label>
+        <div class="layui-input-block">
+            <input type="text" name="User[username]" value="<?=$model->username?>" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><?=$model->getAttributeLabel('email')?></label>
+        <div class="layui-input-block">
+            <input type="email" name="User[email]" value="<?=$model->email?>"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label"><?=$model->getAttributeLabel('status')?></label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="User[status]" lay-skin="switch" lay-text="Active|InActive" disabled <?= $model->status == User::STATUS_ACTIVE? 'checked':''?> >
+        </div>
+    </div>
+</form>
 
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+<?php 
+    JsBlock::begin();
+    // 使用Layui 的form模块，用来渲染登录表格
+    // Layui 在LoginAsset中已经加载
+?>
+    layui.use('form',function(){
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'username',
-            'auth_key',
-            'password_hash',
-            'password_reset_token',
-            'email:email',
-            'status',
-            'created_at',
-            'updated_at',
-            'verification_token',
-        ],
-    ]) ?>
-
-</div>
+    });
+<?php
+    JsBlock::end();
+?>
