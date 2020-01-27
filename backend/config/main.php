@@ -17,6 +17,7 @@ return [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
+            'baseUrl' => '/admin', // 前后台同用一个域名设置
         ],
         'user' => [
             'identityClass' => 'backend\models\Admin',

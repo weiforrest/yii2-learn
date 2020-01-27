@@ -15,6 +15,7 @@ return [
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
+            'baseUrl' => '', // 前后台同用一个域名设置
         ],
         'user' => [
             'identityClass' => 'common\models\User',
