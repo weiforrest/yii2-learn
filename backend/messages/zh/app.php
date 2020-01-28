@@ -15,4 +15,13 @@ return [
     'RePassword' => '密码校验',
     'Email' => '电子邮箱',
     'Status' => '状态',
+
+    /* RBAC */
+    'Roles' => '角色',
+    'Create Roles' => '创建角色',
+    'Rule' => '规则',
+    'Description' => '描述',
+    'Name' => '名称',
+    'Data' => '数据',
+
 ];

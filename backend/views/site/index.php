@@ -205,6 +205,9 @@ AppAsset::register($this);
                                 <a lay-href="<?= Url::to(['rbac/roles'])?>">角色</a>
                             </dd>
                             <dd>
+                                <a lay-href="<?= Url::to(['rbac/createrole'])?>">创建角色</a>
+                            </dd>
+                            <dd>
                                 <a lay-href="<?= Url::to(['rbac/permissions'])?>">权限</a>
                             </dd>
                         </dl>
