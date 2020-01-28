@@ -18,7 +18,7 @@ return [
 
     /* RBAC */
     'Roles' => '角色',
-    'Create Roles' => '创建角色',
+    'Create Role' => '创建角色',
     'Rule' => '规则',
     'Description' => '描述',
     'Name' => '名称',

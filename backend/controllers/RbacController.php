@@ -12,26 +12,39 @@ class RbacController  extends Controller
     //Role
     public function actionRoles()
     {
-        $auth = Yii::$app->authManager;
-        $roles = $auth->getRoles();
+        if(Yii::$app->request->isAjax){
+            $auth = Yii::$app->authManager;
+            $roles = $auth->getRoles();
 
-        //处理分页
-        $pagination = [];
-        $params = Yii::$app->request->bodyParams;
-        $pagination['pageSize'] = $params['pageSize'] ? $params['pageSize']: 10;
+            //处理分页
+            $pagination = [];
+            $params = Yii::$app->request->bodyParams;
+            $pagination['pageSize'] = $params['pageSize'] ? $params['pageSize']: 10;
 
-        if($params['page']){
-            // Yii2 current page number is zero-based
-            $pagination['page'] = $params['page'] - 1;
+            if($params['page']){
+                // Yii2 current page number is zero-based
+                $pagination['page'] = $params['page'] - 1;
+            }
+
+            $dataProvider = new ArrayDataProvider([
+                'allModels' => $roles,
+                'pagination' => $pagination,
+            ]);
+
+            $response = Yii::$app->response;
+            $response->format = \yii\web\Response::FORMAT_JSON;
+
+            return [
+                "code" => 0,
+                'msg' => "OK",
+                'count' => $dataProvider->getTotalCount(),
+                'data' => $dataProvider->getModels(),
+            ];
+
+        } else {
+            return $this->render('roles');
         }
 
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $data,
-            'pagination' => $pagination,
-        ]);
-
-
-        return $this->render('roles');
     }
 
     public function actionCreaterole()
