@@ -28,13 +28,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <input type="text" name="email" id="email" class="layui-input">
                 </div>
                 <div class="layui-table-toolbar-button">
-                    <button class="layui-btn" lay-submit lay-filter="userSearch"><i class="layui-icon layui-icon-search"></i></button>
+                    <button class="layui-btn" lay-submit lay-filter="Search"><i class="layui-icon layui-icon-search"></i></button>
                     <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
                 </div>
             </div>
         </div>
     </form>
-    <table id="userTable" lay-filter="user"></table>
+    <table id="indexTable" lay-filter="index"></table>
     <?php /* GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -100,8 +100,8 @@ $this->params['breadcrumbs'][] = $this->title;
         , csrfToken = "<?=Yii::$app->request->getCsrfToken()?>"; 
 
         //异步方法渲染表格
-        var userTable = table.render({
-            elem: '#userTable'
+        var indexTable = table.render({
+            elem: '#indexTable'
             ,url: '<?=Url::to(['user/data'])?>'
             //添加csrf验证
             ,where: {"_csrf-backend":csrfToken}
@@ -134,7 +134,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         //监听头部工具栏事件
-        table.on('toolbar(user)', function(obj){
+        table.on('toolbar(index)', function(obj){
             var checkStatus = table.checkStatus(obj.config.id);
             var data = checkStatus.data;
             switch(obj.event) {
@@ -168,6 +168,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                             );
                             layer.close(index);
+                           // TODO:
+                           // 添加自动刷新当前页面的功能 
                         });
                     }
                 break;
@@ -175,7 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         //监听行工具栏事件
-        table.on('tool(user)', function(obj){
+        table.on('tool(index)', function(obj){
             switch(obj.event) {
                 case 'delete':
                     layer.confirm('确定删除 '+obj.data.username+' 用户?', function(index){
@@ -203,6 +205,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         // 关闭窗口
                         layer.close(index);
+                        // TODO:
+                        // 添加自动刷新当前页面的功能 
 
                     });
                 break;
@@ -228,11 +232,11 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         // 监听搜索框
-        form.on('submit(userSearch)', function(data){
+        form.on('submit(Search)', function(data){
             console.log(data.field.username);
             //console.log(data.field.email);
             //根据搜索条件重载表格
-            userTable.reload({
+            indexTable.reload({
                 where:{
                     "_csrf-backend":csrfToken
                     ,"username":data.field.username
