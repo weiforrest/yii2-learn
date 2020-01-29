@@ -17,13 +17,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <input type="text" name="name" id="name" class="layui-input">
                 </div>
                 <div class="layui-table-toolbar-button">
-                    <button class="layui-btn" lay-submit lay-filter="userSearch"><i class="layui-icon layui-icon-search"></i></button>
+                    <button class="layui-btn" lay-submit lay-filter="search"><i class="layui-icon layui-icon-search"></i></button>
                     <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
                 </div>
             </div>
         </div>
     </form>
-    <table id="userTable" lay-filter="roles"></table>
+    <table id="indexTable" lay-filter="roles"></table>
     
 
 <!-- 头部工具栏模板 -->
@@ -63,8 +63,8 @@ $this->params['breadcrumbs'][] = $this->title;
         , csrfToken = "<?=Yii::$app->request->getCsrfToken()?>"; 
 
         //直接渲染表格
-        var userTable = table.render({
-            elem: '#userTable'
+        var indexTable = table.render({
+            elem: '#indexTable'
             ,url: '<?=Url::to(['roles'])?>'
             //添加csrf验证
             ,where: {"_csrf-backend":csrfToken}
@@ -106,7 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 break;
                 case 'deleteSelected':
                     if(data.length != 0) {
-                        layer.confirm("确定删除共"+data.length+"个用户?", function(index){
+                        layer.confirm("确定删除共"+data.length+"个角色?", function(index){
                             console.log(data);
                             /*
                             //构建[{id:1},{id:2}] 数组
@@ -114,13 +114,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return {id};
                             });*/
                             var result = data.map(function(val,index){
-                                return val.id;
+                                return val.name;
                             });
                             //console.log({ id:result, "_csrf-backend":csrfToken});
 
                             $.post(
-                                "<?=Url::to(['user/delete'])?>"
-                                ,{ id:result, "_csrf-backend":csrfToken}
+                                "<?=Url::to(['deleterole'])?>"
+                                ,{ name:result, "_csrf-backend":csrfToken}
                                 ,function(data){
                                     if(data.code == 0){
                                         //删除所有行
@@ -138,13 +138,13 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         //监听行工具栏事件
-        table.on('tool(user)', function(obj){
+        table.on('tool(roles)', function(obj){
             switch(obj.event) {
                 case 'delete':
-                    layer.confirm('确定删除 '+obj.data.username+' 用户?', function(index){
+                    layer.confirm('确定删除 '+obj.data.description+' 角色?', function(index){
                         $.post(
-                            "<?= Url::to(['user/delete'])?>"
-                            ,{id:obj.data.id, "_csrf-backend":csrfToken}
+                            "<?= Url::to(['deleterole'])?>"
+                            ,{name:obj.data.name, "_csrf-backend":csrfToken}
                             ,function (data) {
                                 if(data.code == 0){
                                     obj.del();
@@ -174,11 +174,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
         // 监听搜索框
-        form.on('submit(userSearch)', function(data){
+        form.on('submit(search)', function(data){
             console.log(data.field.name);
             //console.log(data.field.email);
             //根据搜索条件重载表格
-            userTable.reload({
+            indexTable.reload({
                 where:{
                     "_csrf-backend":csrfToken
                     ,"name":data.field.name
