@@ -199,7 +199,7 @@ AppAsset::register($this);
                         </a>
                         <dl class="layui-nav-child">
                             <dd>
-                                <a lay-href="<?= Url::to(['rbac/admin'])?>">管理员</a>
+                                <a lay-href="<?= Url::to(['admin/index'])?>">管理员</a>
                             </dd>
                             <dd>
                                 <a lay-href="<?= Url::to(['rbac/roles'])?>">角色</a>

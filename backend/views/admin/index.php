@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use common\widgets\JsBlock;
 use yii\grid\GridView;
-use backend\models\User;
+use backend\models\Admin;
 
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\UserSearch */
+/* @var $searchModel backend\models\AdminSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Users');
+$this->title = Yii::t('app', 'Admins');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -23,49 +23,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="layui-input-inline">
                     <input type="text" name="username" id="username" class="layui-input">
                 </div>
-                <label class="layui-form-label"><?= Yii::t('app', "Email")?></label>
-                <div class="layui-input-inline">
-                    <input type="text" name="email" id="email" class="layui-input">
-                </div>
                 <div class="layui-table-toolbar-button">
-                    <button class="layui-btn" lay-submit lay-filter="userSearch"><i class="layui-icon layui-icon-search"></i></button>
+                    <button class="layui-btn" lay-submit lay-filter="Search"><i class="layui-icon layui-icon-search"></i></button>
                     <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
                 </div>
             </div>
         </div>
     </form>
-    <table id="userTable" lay-filter="user"></table>
-    <?php /* GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'username',
-            // 'auth_key',
-            // 'password_hash',
-            // 'password_reset_token',
-            'email:email',
-            'status',
-            'created_at',
-            'updated_at',
-            //'verification_token',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); */ ?>
+    <table id="indexTable" lay-filter="index"></table>
     
 
 <!-- 状态切换的模板 -->
 <script type="text/html" id="switchTpl">
-    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-filter="status" lay-text="Active|InActive"  {{ d.status == <?=User::STATUS_ACTIVE?> ? 'checked': ''}}>
+    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-filter="status" lay-text="Active|InActive"  {{ d.status == <?=Admin::STATUS_ACTIVE?> ? 'checked': ''}}>
 </script>
 
 <!-- 头部工具栏模板 -->
 <script type="text/html" id="toolbarTpl">
     <div class="layui-btn-container">
-        <?= Html::a(Yii::t('app', 'Create User'),['create'],['class' =>'layui-btn layui-btn-sm'])?>
+        <?= Html::a(Yii::t('app', 'Create Admin'),['create'],['class' =>'layui-btn layui-btn-sm'])?>
         <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
         <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteSelected"><?= Yii::t('app', "Delete Selected")?></button>
     </div>
@@ -100,9 +76,9 @@ $this->params['breadcrumbs'][] = $this->title;
         , csrfToken = "<?=Yii::$app->request->getCsrfToken()?>"; 
 
         //异步方法渲染表格
-        var userTable = table.render({
-            elem: '#userTable'
-            ,url: '<?=Url::to(['user/data'])?>'
+        var indexTable = table.render({
+            elem: '#indexTable'
+            ,url: '<?=Url::to(['admin/data'])?>'
             //添加csrf验证
             ,where: {"_csrf-backend":csrfToken}
             ,request: {
@@ -118,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ,{type:'numbers',title: '序号'}
                 ,{field:'id', title:'ID',hide:true,sort:true}
                 ,{field:'username', title:'用户名'}
-                ,{field:'email', title:'电子邮箱'}
+                ,{field:'nickname', title:'昵称'}
                 ,{field:'status', title:'状态',templet:'#switchTpl', unresize:true,align:'center',sort:true}
                 ,{field:'created_at', title:'创建时间'
                     ,templet: '<div>{{layui.util.toDateString(d.created_at*1000)}}</div>'
@@ -134,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         //监听头部工具栏事件
-        table.on('toolbar(user)', function(obj){
+        table.on('toolbar(index)', function(obj){
             var checkStatus = table.checkStatus(obj.config.id);
             var data = checkStatus.data;
             switch(obj.event) {
@@ -156,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             //console.log({ id:result, "_csrf-backend":csrfToken});
 
                             $.post(
-                                "<?=Url::to(['user/delete'])?>"
+                                "<?=Url::to(['admin/delete'])?>"
                                 ,{ id:result, "_csrf-backend":csrfToken}
                                 ,function(data){
                                     if(data.code == 0){
@@ -168,6 +144,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 }
                             );
                             layer.close(index);
+                           // TODO:
+                           // 添加自动刷新当前页面的功能 
                         });
                     }
                 break;
@@ -175,12 +153,12 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         //监听行工具栏事件
-        table.on('tool(user)', function(obj){
+        table.on('tool(index)', function(obj){
             switch(obj.event) {
                 case 'delete':
                     layer.confirm('确定删除 '+obj.data.username+' 用户?', function(index){
                         $.post(
-                            "<?= Url::to(['user/delete'])?>"
+                            "<?= Url::to(['admin/delete'])?>"
                             ,{id:obj.data.id, "_csrf-backend":csrfToken}
                             ,function (data) {
                                 if(data.code == 0){
@@ -191,7 +169,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         );
                         /*$.ajax({
                             type:'post'
-                            ,url:"<?= Url::to(['user/delete'])?>"
+                            ,url:"<?= Url::to(['admin/delete'])?>"
                             ,data:{"_csrf-backend":csrfToken, id:obj.data.id} 
                             ,success:function(data) {
                                 if(data.code == 0){
@@ -203,6 +181,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         // 关闭窗口
                         layer.close(index);
+                        // TODO:
+                        // 添加自动刷新当前页面的功能 
 
                     });
                 break;
@@ -212,9 +192,9 @@ $this->params['breadcrumbs'][] = $this->title;
         // 监听switch按钮
         form.on('switch(status)',function(data){
             var id = data.value;
-            var status = data.elem.checked ? "<?=User::STATUS_ACTIVE?>":"<?=User::STATUS_INACTIVE?>";
+            var status = data.elem.checked ? "<?=Admin::STATUS_ACTIVE?>":"<?=Admin::STATUS_INACTIVE?>";
             $.post(
-                "<?= Url::to(['user/status'])?>"
+                "<?= Url::to(['admin/status'])?>"
                 ,{id:id, status:status,"_csrf-backend":csrfToken}
                 ,function (data) {
                     if(data.code == 0){
@@ -228,15 +208,14 @@ $this->params['breadcrumbs'][] = $this->title;
         });
 
         // 监听搜索框
-        form.on('submit(userSearch)', function(data){
+        form.on('submit(Search)', function(data){
             console.log(data.field.username);
             //console.log(data.field.email);
             //根据搜索条件重载表格
-            userTable.reload({
+            indexTable.reload({
                 where:{
                     "_csrf-backend":csrfToken
                     ,"username":data.field.username
-                    ,"email":data.field.email
                 }
             })
             layer.msg("search");

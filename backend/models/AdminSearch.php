@@ -19,7 +19,7 @@ class AdminSearch extends Admin
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username',  'email'], 'safe'],
+            [['username'], 'safe'],
         ];
     }
 
@@ -28,7 +28,6 @@ class AdminSearch extends Admin
         $fields = [
             'id',
             'username',
-            'email',
             'status',
             'updated_at',
             'created_at'
@@ -88,13 +87,8 @@ class AdminSearch extends Admin
             'updated_at' => $this->updated_at,
         ]);
 
-            Yii::trace("outusernmae");
         if($params['username']){
-            Yii::trace("intousername");
             $query->andFilterWhere(['like', 'username', $params['username']]);
-        }
-        if($params['email']){
-            $query->andFilterWhere(['like', 'email', $params['email']]);
         }
 
         return $dataProvider;

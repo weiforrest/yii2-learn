@@ -24,4 +24,8 @@ return [
     'Name' => '名称',
     'Data' => '数据',
 
+    /* 管理员 */
+    'Admins' => '管理员',
+    'Create Admin' => '创建管理员',
+
 ];
