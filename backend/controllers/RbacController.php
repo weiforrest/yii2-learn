@@ -84,10 +84,25 @@ class RbacController  extends Controller
 
     public function actionRole($name)
     {
-
         $auth = Yii::$app->authManager;
         $role = $auth->getRole($name);
+
         if($role){
+
+            $permissions = $auth->getPermissions();
+            $result = [];
+            foreach($permissions as $permission) {
+                if($auth->canAddChild($role,$permission)){
+                    // $auth->addChild($role,$permission);
+                    $result[] = [$permission->name => $permission->description];
+                }
+            }
+            var_dump($result);
+            exit();
+
+
+            
+
             return $this->render('role', [
                 'model' => $role,
             ]);
