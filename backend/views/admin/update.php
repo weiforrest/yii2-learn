@@ -1,50 +1,50 @@
 <?php
 
 use yii\helpers\Url;
-use backend\models\User;
+use backend\models\Admin;
 use common\widgets\JsBlock;
 use yii\helpers\HTML;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\User */
+/* @var $model backend\models\Admin */
 
-$this->title = Yii::t('app', 'Update User: {name}', [
-    'name' => $model->username,
+$this->title = Yii::t('app', 'Update Admin: {name}', [
+    'name' => $model->nickname,
 ]);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->username, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Admins'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->nickname, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
-<form  class="layui-form layui-form-pane" action="<?= Url::to(["user/update",'id' => $model->id])?>" method="post">
+<form  class="layui-form layui-form-pane" action="<?= Url::to(["admin/update",'id' => $model->id])?>" method="post">
     <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->getCsrfToken(); ?>">
     <div class="layui-form-item">
-        <label class="layui-form-label"><?=$model->getAttributeLabel('username')?></label>
+        <label class="layui-form-label"><?=Yii::t('app',$model->getAttributeLabel('username'))?></label>
         <div class="layui-input-block">
-            <input type="text" name="User[username]" value="<?=$model->username?>" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
-        </div>
-    </div>
-    <div class="layui-form-item" >
-        <label class="layui-form-label"><?=$model->getAttributeLabel('password')?></label>
-        <div class="layui-input-block">
-            <input type="password" name="User[password]" value="<?=$model->password?>"  placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
-        </div>
-    </div>
-    <div class="layui-form-item" >
-        <label class="layui-form-label"><?=$model->getAttributeLabel('repassword')?></label>
-        <div class="layui-input-block">
-            <input type="password" name="User[repassword]" value="<?=$model->repassword?>"  placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
+            <input type="text" name="Admin[username]" value="<?=$model->username?>" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label"><?=$model->getAttributeLabel('email')?></label>
+        <label class="layui-form-label"><?=Yii::t('app',$model->getAttributeLabel('nickname'))?></label>
         <div class="layui-input-block">
-            <input type="email" name="User[email]" value="<?=$model->email?>" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
+            <input type="text" name="Admin[nickname]" value="<?=$model->nickname?>" required lay-verify="required" placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
+        </div>
+    </div>
+    <div class="layui-form-item" >
+        <label class="layui-form-label"><?=Yii::t('app',$model->getAttributeLabel('password'))?></label>
+        <div class="layui-input-block">
+            <input type="password" name="Admin[password]" value="<?=$model->password?>"  placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
+        </div>
+    </div>
+    <div class="layui-form-item" >
+        <label class="layui-form-label"><?=Yii::t('app',$model->getAttributeLabel('repassword'))?></label>
+        <div class="layui-input-block">
+            <input type="password" name="Admin[repassword]" value="<?=$model->repassword?>"  placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label"><?=$model->getAttributeLabel('status')?></label>
+        <label class="layui-form-label"><?=Yii::t('app',$model->getAttributeLabel('status'))?></label>
         <div class="layui-input-block">
-            <input type="checkbox" name="User[status]" lay-skin="switch" lay-text="Active|InActive" lay-filter="status" value="<?=$model->status?>" <?=$model->status == User::STATUS_ACTIVE ? 'checked':''?>>
+            <input type="checkbox" name="User[status]" lay-skin="switch" lay-text="Active|InActive" lay-filter="status" value="<?=$model->status?>" <?=$model->status == Admin::STATUS_ACTIVE ? 'checked':''?>>
         </div>
     </div>
     <div class="layui-form-item">
@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
         form.on('switch(status)', function(data){
             console.log(data);
-            data.elem.value = data.elem.checked ? '<?=User::STATUS_ACTIVE?>' : '<?=User::STATUS_INACTIVE?>';
+            data.elem.value = data.elem.checked ? '<?=Admin::STATUS_ACTIVE?>' : '<?=Admin::STATUS_INACTIVE?>';
             data.elem.checked = true; //因为不选中不传递值给后台，所有设置为选中, 为了传递值给后台
         });
 
