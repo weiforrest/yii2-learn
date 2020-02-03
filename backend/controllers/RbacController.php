@@ -89,22 +89,30 @@ class RbacController  extends Controller
 
         if($role){
 
-            $permissions = $auth->getPermissions();
+            // 获取所有权限
+            $originPermissions = $auth->getPermissions();
+            /*
             $result = [];
             foreach($permissions as $permission) {
                 if($auth->canAddChild($role,$permission)){
                     // $auth->addChild($role,$permission);
                     $result[] = [$permission->name => $permission->description];
                 }
+            }*/
+            $permissions = [];
+            foreach($originPermissions as $originPermission){
+                $data = $originPermissions->data;
+
+
             }
-            var_dump($result);
-            exit();
+            foreach ($permissions as $permission){
+                $fillDatas[$permission['group']][$permission['category']][] = $permission;
+            }
 
-
-            
 
             return $this->render('role', [
                 'model' => $role,
+                'permissions' => $result,
             ]);
         }else{
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));

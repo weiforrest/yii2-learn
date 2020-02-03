@@ -37,23 +37,31 @@ class InitController extends \yii\console\Controller
         try{
             $dir = dirname(dirname(dirname(__FILE__))) . '/backend/controllers';
             $controllers = glob($dir.'/*');
+            //遍历控制器
+            $permissions = [];
             foreach($controllers as $controller) {
                 $content = file_get_contents($controller);
                 \preg_match('/class ([a-zA-Z]+)Controller/', $content,$match);
                 $controllerName = $match[1];
-                $permissions[] = \strtolower($controllerName. '/*');
+                $actionPermissions = [];
+                $actionPermissions[] = \strtolower($controllerName. '/*');
                 //匹配首字母大写的动作,防止匹配到actions方法
                 \preg_match_all('/public function action([A-Z][a-zA-Z]+)/', $content, $matches);
+                // 遍历控制器文件
                 foreach($matches[1] as $actionName){
-                    $permissions[] = \strtolower($controllerName.'/'. $actionName);
+                    $actionPermissions[] = \strtolower($controllerName.'/'. $actionName);
                 }
+                $permissions[$controllerName] = $actionPermissions;
 
             }
             $auth = Yii::$app->authManager;
-            foreach($permissions as $permission) {
+            foreach($permissions as $controllerName => $actionPermissions) {
+                foreach($actionPermissions as $permission)
                 if(!$auth->getPermission($permission)) {
                     $obj = $auth->createPermission($permission);
                     $obj->description = $permission;
+                    $obj->data = $controllerName;
+
                     $auth->add($obj);
                 }
             }

@@ -38,6 +38,25 @@ $this->params['breadcrumbs'][] = $this->title;
             <input type="text" name="Role[data]" value="<?=$model->data?>" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限</label>
+        <div class="layui-input-block">
+        <?php
+            foreach($permissions as $permission){
+                foreach($permission as $name => $key){
+                echo '<input type="checkbox" name="'.$key.'" title="'.$name.'">';
+                }
+            }
+
+        ?>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
 </form>
 
 
