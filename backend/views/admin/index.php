@@ -23,6 +23,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="layui-input-inline">
                     <input type="text" name="username" id="username" class="layui-input">
                 </div>
+                <label class="layui-form-label"><?= Yii::t('app', "Nickname")?></label>
+                <div class="layui-input-inline">
+                    <input type="text" name="nickname" id="nickname" class="layui-input">
+                </div>
                 <div class="layui-table-toolbar-button">
                     <button class="layui-btn" lay-submit lay-filter="Search"><i class="layui-icon layui-icon-search"></i></button>
                     <button class="layui-btn layui-btn-primary" type="reset"><i class="layui-icon layui-icon-delete"></i></button>
@@ -156,7 +160,7 @@ $this->params['breadcrumbs'][] = $this->title;
         table.on('tool(index)', function(obj){
             switch(obj.event) {
                 case 'delete':
-                    layer.confirm('确定删除 '+obj.data.username+' 用户?', function(index){
+                    layer.confirm('确定删除 '+obj.data.nickname+' 管理员?', function(index){
                         $.post(
                             "<?= Url::to(['admin/delete'])?>"
                             ,{id:obj.data.id, "_csrf-backend":csrfToken}
@@ -216,6 +220,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 where:{
                     "_csrf-backend":csrfToken
                     ,"username":data.field.username
+                    ,"nickname":data.field.nickname
                 }
             })
             layer.msg("search");

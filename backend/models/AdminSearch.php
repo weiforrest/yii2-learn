@@ -19,7 +19,7 @@ class AdminSearch extends Admin
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username'], 'safe'],
+            [['username', 'nickname'], 'string'],
         ];
     }
 
@@ -28,6 +28,7 @@ class AdminSearch extends Admin
         $fields = [
             'id',
             'username',
+            'nickname',
             'status',
             'updated_at',
             'created_at'
@@ -90,6 +91,12 @@ class AdminSearch extends Admin
         if($params['username']){
             $query->andFilterWhere(['like', 'username', $params['username']]);
         }
+
+        if($params['nickname']){
+            $query->andFilterWhere(['like', 'nickname', $params['nickname']]);
+        }
+
+        
 
         return $dataProvider;
     }

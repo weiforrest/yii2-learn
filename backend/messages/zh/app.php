@@ -11,8 +11,10 @@ return [
     'Users' => '网站用户',
     'Create User' => '创建用户',
     'UserName' => '用户名',
+    'Username' => '用户名',
     'Password' => '密码',
     'RePassword' => '密码校验',
+    'Repassword' => '密码校验',
     'Email' => '电子邮箱',
     'Status' => '状态',
 
@@ -27,5 +29,6 @@ return [
     /* 管理员 */
     'Admins' => '管理员',
     'Create Admin' => '创建管理员',
+    'Nickname' => '昵称',
 
 ];

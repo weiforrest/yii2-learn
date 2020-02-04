@@ -82,7 +82,7 @@ class AdminController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Admin(['scenario' => Admin::SCENARIO_REGISTER]);
+        $model = new Admin(['scenario' => Admin::SCENARIO_CREATE]);
 
         if ($model->load(Yii::$app->request->post())){
            if($model->save()) {

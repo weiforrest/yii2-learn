@@ -25,6 +25,13 @@ class Admin extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+    public $password;
+    public $rememberMe = false;
+    public $repassword;
+
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
 
     /**
      * {@inheritdoc}
@@ -51,7 +58,14 @@ class Admin extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
+            [['username', 'password', 'repassword','nickname'], 'string'],
+            [['username'],'unique'],
+            ['repassword','compare','compareAttribute' => 'password'],
+            ['status', 'default', 'value' => self::STATUS_INACTIVE],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
+            [['username','nickname','password','repassword'], 'required', 'on' => [self::SCENARIO_CREATE]],
+            [['username', 'nickname'], 'required', 'on'=> [self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -128,6 +142,34 @@ class Admin extends ActiveRecord implements IdentityInterface
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->setPassword($this->password);
+        }else{
+            if( !empty($this->password) && empty($this->repassword) ){
+                $this->addError("repassword", Yii::t('yii', '{attribute} must be equal to "{compareValueOrAttribute}".', [
+                    'attribute' => yii::t('app', 'Repeat Password'),
+                    'compareValueOrAttribute' => yii::t('app', 'Password')
+                    ])
+                );
+                return false;
+            }
+            $this->setPassword( $this->password );
+        }
+        return parent::beforeSave($insert);
+    }
+
+
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_ACTIVE => Yii::t('app', 'Active'),
+            self::STATUS_INACTIVE => Yii::t('app', "InActive")
+        ];
     }
 
 }
