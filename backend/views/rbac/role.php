@@ -38,19 +38,29 @@ $this->params['breadcrumbs'][] = $this->title;
             <input type="text" name="Role[data]" value="<?=$model->data?>" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">权限</label>
+    <div class="layui-form-item" >
+        <label class="layui-form-label"><?=Yii::t('app', 'Permissions')?></label>
         <div class="layui-input-block">
+        <input type="checkbox" name="permission_all" title="全选">
+        </div>
+    </div>
         <?php
-            foreach($permissions as $permission){
-                foreach($permission as $name => $key){
-                echo '<input type="checkbox" name="'.$key.'" title="'.$name.'">';
+            foreach($permissions as $groupName => $groupPermissions){
+                $i=0;
+                foreach($groupPermissions as $permission){
+                    if($i==0){
+                        echo '<input type="checkbox"  name="'.$permission->name.'" title="'.$permission->description.'">';
+                        echo '<div class="layui-input-block">';
+                        $i=1;
+                    }else{
+                        echo '<input type="checkbox" name="'.$permission->name.'" title="'.$permission->description.'">';
+                    }
                 }
+                $i=0;
+                echo '</div>';
             }
 
         ?>
-        </div>
-    </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit lay-filter="">提交</button>

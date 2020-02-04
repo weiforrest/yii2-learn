@@ -131,6 +131,9 @@ class Admin extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
+        Yii::info('into admin validatePassword');
+        Yii::trace($password);
+        Yii::trace('current password_hash: '.Yii::$app->security->generatePasswordHash($password));
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 

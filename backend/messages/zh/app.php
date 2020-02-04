@@ -25,7 +25,8 @@ return [
     'Description' => '描述',
     'Name' => '名称',
     'Data' => '数据',
-
+    'Permissions' => '权限',
+    
     /* 管理员 */
     'Admins' => '管理员',
     'Create Admin' => '创建管理员',

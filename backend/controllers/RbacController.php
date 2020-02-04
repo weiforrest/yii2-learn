@@ -99,25 +99,23 @@ class RbacController  extends Controller
                     $result[] = [$permission->name => $permission->description];
                 }
             }*/
+        
+            // 对所有的权限进行分组
             $permissions = [];
-            foreach($originPermissions as $originPermission){
-                $data = $originPermissions->data;
-
-
+            foreach($originPermissions as $k => $val){
+                $permissions[$val->data][] = $val;
             }
-            foreach ($permissions as $permission){
-                $fillDatas[$permission['group']][$permission['category']][] = $permission;
-            }
-
 
             return $this->render('role', [
                 'model' => $role,
-                'permissions' => $result,
+                'permissions' => $permissions,
             ]);
         }else{
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
     }
+
+
     public function actionDeleterole()
     {
         if(Yii::$app->request->isAjax){
