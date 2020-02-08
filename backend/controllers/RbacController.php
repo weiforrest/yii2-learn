@@ -63,10 +63,18 @@ class RbacController  extends Controller
            $auth = Yii::$app->authManager;
            $role = $auth->createRole($model->name);
            $role->description = $model->description;
-        //    var_dump($model);
-        //    exit();
 
            if($auth->add($role)) {
+               $permissions = Yii::$app->request->post('Permissions');
+               foreach($permissions as $key => $val) {
+                   if($permission = $auth->getPermission($key)) {
+                        // 分配权限
+                        if($auth->canAddChild($role,$permission)){
+                            $auth->addChild($role, $permission);
+                        }
+
+                    }
+                }
                 Yii::$app->getSession()->setFlash("success", Yii::t('app',"Success"));
                 return $this->redirect(['role', 'name' => $role->name]);
            }else{
@@ -78,7 +86,12 @@ class RbacController  extends Controller
                 Yii::$app->getSession()->setFlash('error', $err);
             }
         }
-        return $this->render('createrole',['model' => $model]);
+        
+        $permissions = $this->getPermissions();
+        return $this->render('createrole',[
+            'model' => $model,
+            'permissions' => $permissions,
+        ]);
 
     }
 
@@ -88,31 +101,104 @@ class RbacController  extends Controller
         $role = $auth->getRole($name);
 
         if($role){
+            $model = new Role();
+            // 处理更新提交
+            if ($model->load(Yii::$app->request->post())){
+               $copyPermissions = Yii::$app->request->post('Permissions');
+               $permissions = $copyPermissions;
+               //更新角色信息
+               if($role->description != $model->description || $role->name != $model->name){
+                   $role->description = $model->description;
+                   if($role->name != $model->name){
+                        if($auth->getRole($model->name)){
+                                Yii::$app->getSession()->setFlash('error', 'Role: '.$model->name.' is existed.');
+                                $rolePermissions = $auth->getPermissionsByRole($role->name);
+                                $permissions = $this->getPermissions();
+                                return $this->render('role', [
+                                    'model' => $role,
+                                    'permissions' => $permissions,
+                                    'rolePermissions' => $rolePermissions,
+                                ]);
+                        }
+                    }
+                   
+                   $role->name = $model->name;
+                   $auth->update($name,$role);
+               }
+            
+                $rolePermissions = $auth->getPermissionsByRole($model->name);
+                // var_dump($rolePermissions);
+                // var_dump($permissions); echo "<br/>";
+                // exit();
 
-            // 获取所有权限
-            $originPermissions = $auth->getPermissions();
-            /*
-            $result = [];
-            foreach($permissions as $permission) {
-                if($auth->canAddChild($role,$permission)){
-                    // $auth->addChild($role,$permission);
-                    $result[] = [$permission->name => $permission->description];
+                // 先找到需要删除的权限，再找到需要添加的
+                foreach($rolePermissions as $permission){
+                    if(!isset($permissions[$permission->name])){
+                        //删除权限
+                        $removePermission = $auth->getPermission($permission->name);
+                        // echo "删除权限".$permission->name;
+                        $auth->removeChild($role,$removePermission);
+                    } else {
+                        // 权限相同
+                        $permissions[$permission->name] = false;
+                    }
                 }
-            }*/
-        
-            // 对所有的权限进行分组
-            $permissions = [];
-            foreach($originPermissions as $k => $val){
-                $permissions[$val->data][] = $val;
-            }
+                // var_dump($permissions);
+                // exit();
+                // 添加权限
+                if($permissions){
+                    foreach($permissions as $permissionName => $value) {
+                        if($value){
+                            if($permission = $auth->getPermission($permissionName)) {
+                                if($auth->canAddChild($role,$permission)){
+                                    $auth->addChild($role, $permission);
+                                    // echo '添加权限'. $permissionName;
+                                }
+
+                            }
+                        }
+                    }
+                }
+                Yii::$app->getSession()->setFlash("success", Yii::t('app',"Success"));
+
+            } 
+
+            $rolePermissions = $auth->getPermissionsByRole($role->name);
+            $permissions = $this->getPermissions();
+            // 获取当前权限
 
             return $this->render('role', [
                 'model' => $role,
                 'permissions' => $permissions,
+                'rolePermissions' => $rolePermissions,
             ]);
         }else{
             throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
+    }
+
+    protected function getPermissions()
+    {
+        $auth = Yii::$app->authManager;
+        // 获取所有权限
+        $originPermissions = $auth->getPermissions();
+        /*
+        $result = [];
+        foreach($permissions as $permission) {
+            if($auth->canAddChild($role,$permission)){
+                // $auth->addChild($role,$permission);
+                $result[] = [$permission->name => $permission->description];
+            }
+        }*/
+
+    
+        // 对所有的权限进行分组
+        $permissions = [];
+        foreach($originPermissions as $k => $val){
+            $permissions[$val->data][] = $val;
+        }
+        return $permissions;
+
     }
 
 

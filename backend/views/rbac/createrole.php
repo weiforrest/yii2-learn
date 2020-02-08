@@ -12,4 +12,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?= $this->render('_roleform', [
     'model' => $model,
+    'permissions' => $permissions,
 ]) ?>

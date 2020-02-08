@@ -25,20 +25,31 @@ use yii\helpers\Html;
         </div>
     </div>
     <div class="layui-form-item" >
-        <label class="layui-form-label"><?=$model->getAttributeLabel('rule')?></label>
+        <label class="layui-form-label"><?=Yii::t('app', 'Permissions')?></label>
         <div class="layui-input-block">
-            <input type="text" name="User[rule]" value="<?=$model->rule?>"  placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
+        <input type="checkbox" name="permission_all" title="全选">
         </div>
     </div>
-    <div class="layui-form-item" >
-        <label class="layui-form-label"><?=$model->getAttributeLabel('data')?></label>
-        <div class="layui-input-block">
-            <input type="text" name="User[data]" value="<?=$model->data?>"  placeholder="" autocomplete="off" class="layui-input" lay-verType="tips">
-        </div>
-    </div>
+        <?php
+            foreach($permissions as $groupName => $groupPermissions){
+                $i=0;
+                foreach($groupPermissions as $permission){
+                    if($i==0){
+                        echo '<input type="checkbox"  name="Permissions['.$permission->name.']" title="'.$permission->description.'">';
+                        echo '<div class="layui-input-block">';
+                        $i=1;
+                    }else{
+                        echo '<input type="checkbox" name="Permissions['.$permission->name.']" title="'.$permission->description.'">';
+                    }
+                }
+                $i=0;
+                echo '</div>';
+            }
+
+        ?>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="">提交</button>
+            <button class="layui-btn" lay-submit lay-filter="submit">提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>

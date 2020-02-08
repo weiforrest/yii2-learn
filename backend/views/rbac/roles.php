@@ -81,8 +81,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ,{type:'numbers',title: '序号'}
                 ,{field:'name', title:'名称'}
                 ,{field:'description', title:'描述'}
-                ,{field:'rule', title:'规则'}
-                ,{field:'data', title:'数据'}
+                //,{field:'rule', title:'规则'}
+                //,{field:'data', title:'数据'}
                 ,{field:'created_at', title:'创建时间'
                     ,templet: '<div>{{layui.util.toDateString(d.created_at*1000)}}</div>'
                     ,sort:true

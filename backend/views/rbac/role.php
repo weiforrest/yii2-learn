@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use backend\models\User;
+use backend\models\Role;
+use yii\helpers\Url;
 use common\widgets\JsBlock;
 
 /* @var $this yii\web\View */
@@ -9,11 +10,12 @@ use common\widgets\JsBlock;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Roles'), 'url' => ['roles']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['rbac/role', 'name' => $model->name]];
 \yii\web\YiiAsset::register($this);
 
 ?>
-<form  class="layui-form layui-form-pane">
+<form  class="layui-form layui-form-pane" action="<?= Url::to(["rbac/role", 'name' => $model->name])?>" method="post">
+    <input type="hidden" name="<?= Yii::$app->request->csrfParam; ?>" value="<?= Yii::$app->request->getCsrfToken(); ?>">
     <div class="layui-form-item">
         <label class="layui-form-label"><?=Yii::t('app', 'Name')?></label>
         <div class="layui-input-block">
@@ -26,18 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <input type="text" name="Role[description]" value="<?=$model->description?>" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><?=Yii::t('app', 'Rule')?></label>
-        <div class="layui-input-block">
-            <input type="text" name="Role[rule]" value="<?=$model->ruleName?>" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label"><?=Yii::t('app', 'Data')?></label>
-        <div class="layui-input-block">
-            <input type="text" name="Role[data]" value="<?=$model->data?>" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-        </div>
-    </div>
     <div class="layui-form-item" >
         <label class="layui-form-label"><?=Yii::t('app', 'Permissions')?></label>
         <div class="layui-input-block">
@@ -48,12 +38,13 @@ $this->params['breadcrumbs'][] = $this->title;
             foreach($permissions as $groupName => $groupPermissions){
                 $i=0;
                 foreach($groupPermissions as $permission){
+                    $checked = in_array($permission, $rolePermissions) ? true:false;
                     if($i==0){
-                        echo '<input type="checkbox"  name="'.$permission->name.'" title="'.$permission->description.'">';
+                        echo '<input type="checkbox"  name="Permissions['.$permission->name.']" title="'.$permission->description.'"'. ($checked ? 'checked':'') .' >';
                         echo '<div class="layui-input-block">';
                         $i=1;
                     }else{
-                        echo '<input type="checkbox" name="'.$permission->name.'" title="'.$permission->description.'">';
+                        echo '<input type="checkbox"  name="Permissions['.$permission->name.']" title="'.$permission->description.'"'. ($checked ? 'checked':'') .' >';
                     }
                 }
                 $i=0;
